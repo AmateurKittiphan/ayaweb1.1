@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase";
+import { Component } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Dashboard from "./page/Dashboard";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Admins from "./admins/Dashboard";
+
+class App extends Component {
+  render() {
+    return (
+      <Router>
+        <Switch>
+          <Route path="/admins" component={Admins} />
+          <Route path="/" component={Dashboard} />
+        </Switch>
+      </Router>
+    );
+  }
 }
+const mapStateToprops = (state) => {
+  return { fireStore: state.firestore.ordered.menulink };
+};
 
-export default App;
+export default compose(
+  firestoreConnect(() => ["menulink"]), // or { collection: 'todos' }
+  connect(mapStateToprops)
+)(App);
